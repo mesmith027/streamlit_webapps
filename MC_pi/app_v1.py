@@ -104,12 +104,12 @@ converge.to_pickle('pkled_data.pkl')
 fig1 = plt.figure()
 ax1 = fig1.gca()
 
-plt.xlim(1,iterations)
-plt.ylim(2.5,4.25)
+plt.xlim(1,max(converge['N_points']))
+plt.ylim(1.5,4.25)
 ax1.set_xscale('log')
 
 plt.scatter(converge['N_points'], converge['pi_est'])
-plt.hlines(np.pi, 0, iterations, colors='g', label='True Pi')
+plt.hlines(np.pi, 0, max(converge['N_points']), colors='g', label='True Pi')
 
 ax1.set_ylabel("Calculated Pi Values", fontsize = 10)
 ax1.set_xlabel("Number of Points Used in Estimation", fontsize = 10)
