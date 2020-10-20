@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import random as rnd
+import pickle as pkle
+import os.path
 import streamlit as st
 
 st.title("Using Monte Carlo to estimate Pi")
@@ -34,7 +36,7 @@ if math:
 
 st.write("lets get going!")
 
-iterations = st.sidebar.slider("Total Number of Points", 1,5000)
+iterations = st.sidebar.number_input("Total Number of Points", min_value=1,value=1)
 
 # use the total number of points to generate pairs of x and y points for our graph
 x_list = []
@@ -80,22 +82,36 @@ st.write("True value of Pi:", np.pi)
 
 # lets track how the estimations change as we change the number of iterations!
 # actually going to add a new point to the graph for every new estimation of \pi
-converge = pd.DataFrame([[1, estimated_pi]], columns=['N_points','pi_est'])
 
-if (converge.iloc[-1,1] != estimated_pi) and (iterations != converge.iloc[-1,0]):
-    # add a line in the converge database
-    converge = converge.append([[iterations,estimated_pi]])
+# check if a pickled file with all the previous dat is there, if not create Data
+data_file = os.path.isfile('pkled_data.pkl')
+data_file
+
+if data_file:
+    #the file exists, we want to read in previous data
+    converge = pd.read_pickle('pkled_data.pkl')
+else:
+    #create database to work with
+    converge = pd.DataFrame([[iterations, estimated_pi]], columns=['N_points','pi_est'])
+
+if converge.iloc[-1,1] != estimated_pi:
+    # add a line with new data in the converge
+    converge.loc[len(converge)] = [iterations,estimated_pi]
+
+#repickle file with added data
+converge.to_pickle('pkled_data.pkl')
 
 fig1 = plt.figure()
-ax1 = fig.gca()
+ax1 = fig1.gca()
 
-plt.xlim(0,5000)
-plt.ylim(0,4.5)
+plt.xlim(1,iterations)
+plt.ylim(2.5,4.25)
+ax1.set_xscale('log')
 
 plt.scatter(converge['N_points'], converge['pi_est'])
-plt.plot([0,5000], [np.pi, np.pi], color='g')
+plt.hlines(np.pi, 0, iterations, colors='g', label='True Pi')
 
-ax.set_ylabel("Calculated Pi Values", fontsize = 10)
-ax.set_xlabel("Number of Points Used in Estimation", fontsize = 10)
+ax1.set_ylabel("Calculated Pi Values", fontsize = 10)
+ax1.set_xlabel("Number of Points Used in Estimation", fontsize = 10)
 
 st.pyplot(fig1)
