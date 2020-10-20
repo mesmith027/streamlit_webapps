@@ -9,8 +9,21 @@ import streamlit as st
 
 st.title("Using Monte Carlo to Estimate Pi")
 
-st.write("description of what Monte Carlo simulations are to go here")
+st.write("Believe it or not Monte Carlo simulations are very useful in a wide variety \
+of fields. That's because they give us a way to predict outcomes that would otherwise be \
+impossible (translation: hard enough not to bother :rolling_on_the_floor_laughing:) because \
+of random chance! ")
 
+st.write("Some examples of every day uses include:")
+st.write("**Finance and Business:** they can be used to evaluate risk in different \
+options the business is looking at, such as investments")
+st.write("**Search and Rescue:** US coast guard uses it to predict likely locations of \
+vessels in need of assistance")
+st.write("**Design and Visuals:** such as video games and producing 3D photo-realistic \
+models and pictures")
+st.write("**Climate Change:** the Intergovernmental Panel on Climate Change uses it \
+to help in the calculation of energy absorbed in the atmosphere due to greenhouse gasses")
+st.write("If you want to know more checkout the [Wiki link](https://en.wikipedia.org/wiki/Monte_Carlo_method)")
 st.write("*Lets get going!*")
 
 st.header('Run Your First Monte Carlo Simulation! :sunglasses:')
@@ -22,14 +35,14 @@ st.write("The idea behind this simulation \
 (yes your a computational person now! :star-struck:) is that the ratio of area of the circle \
 to the area outside the circle but inside the square (those corner bits) has a ratio that happens to be Pi. \
 It's not a coincidence! Someone *discovered* this ratio and found it to be \
-**SO** useful that we decided to give it a special name and symbol!")
+**SO useful** that we decided to give it a special name and symbol!")
 
 st.write("This graph shows all the points overlayed with a circle of radius = 1 and \
 a square with sides of length = 2.")
 
 st.sidebar.markdown("This is where you select the total number of randomly generated \
 points you want to use to estimate what Pi is:")
-iterations = st.sidebar.number_input("Total Number of Points", min_value=1,max_value= 10000, value=1)
+iterations = st.sidebar.number_input("Total Number of Points", min_value=1,max_value= 10000, value=500)
 
 # use the total number of points to generate pairs of x and y points for our graph
 x_list = []
