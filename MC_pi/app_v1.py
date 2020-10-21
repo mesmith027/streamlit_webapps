@@ -6,28 +6,39 @@ import random as rnd
 import pickle as pkle
 import os.path
 import streamlit as st
+from scipy.optimize import curve_fit
 
+# start with an explination of why MC
 st.title("Using Monte Carlo to Estimate Pi")
-
-st.write("Believe it or not Monte Carlo simulations are very useful in a wide variety \
+st.write("Monte Carlo simulations are very useful in a wide variety \
 of fields. That's because they give us a way to predict outcomes that would otherwise be \
 impossible (translation: hard enough not to bother :rolling_on_the_floor_laughing:) because \
 of random chance! ")
-
 st.write("Some examples of every day uses include:")
-st.write("**Finance and Business:** they can be used to evaluate risk in different \
+
+# create 2 columns so we can add text on one side and a gif on the other
+# Space out the maps so the first one is 2x the size of the second
+col1, col2 = st.beta_columns((2,1))
+#column 1
+
+col1.write("**Finance and Business:** they can be used to evaluate risk in different \
 options the business is looking at, such as investments")
-st.write("**Search and Rescue:** US coast guard uses it to predict likely locations of \
+col1.write("**Search and Rescue:** US coast guard uses it to predict likely locations of \
 vessels in need of assistance")
-st.write("**Design and Visuals:** such as video games and producing 3D photo-realistic \
+col1.write("**Design and Visuals:** such as video games and producing 3D photo-realistic \
 models and pictures")
-st.write("**Climate Change:** the Intergovernmental Panel on Climate Change uses it \
+col1.write("**Climate Change:** the Intergovernmental Panel on Climate Change uses it \
 to help in the calculation of energy absorbed in the atmosphere due to greenhouse gasses")
-st.write("If you want to know more checkout the [Wiki link](https://en.wikipedia.org/wiki/Monte_Carlo_method)")
+col1.write("If you want to know more checkout the [Wiki link](https://en.wikipedia.org/wiki/Monte_Carlo_method)")
+
+# column 2: a gif
+col2.write('[Wiki for the image](https://en.wikipedia.org/wiki/Kinetic_theory_of_gases)')
+col2.image('Translational_motion.gif', caption='Brownian motion is random!')
+
 st.write("*Lets get going!*")
 
+# section 2 running a MC simulation
 st.header('Run Your First Monte Carlo Simulation! :sunglasses:')
-
 st.write('From the sidebar type a number in the field (or use the plus button) for \
 the total number of points you want to use to estimate Pi! ')
 
@@ -50,20 +61,20 @@ y_list = []
 inside_count = 0
 for num in range(iterations):
     # get the random values for the y and y coordinates, we want them to be generated
-    # between -1 and 1 for both values
+    # between -1 and 1 for both values to fit in our square
     x_random = rnd.uniform(-1,1)
     x_list.append(x_random)
     y_random = rnd.uniform(-1,1)
     y_list.append(y_random)
 
-    #count if x^2 +y^2 <= 1 (inside circle)
+    #check if the point is inside the circle
     if (x_random**2 +y_random**2) <= 1.0:
         inside_count += 1
 
-#create the circle
+#create the circle for the graph
 circle = plt.Circle((0,0), 1, color='b', fill=False)
 
-#lets plot our paired points on a graph!
+#lets plot our paired points and circle on a graph!
 fig = plt.figure()
 ax = fig.gca()
 
@@ -82,11 +93,14 @@ ax.set_xlabel("x-value", fontsize = 10)
 
 st.pyplot(fig)
 
+# finally lets display our estimation of Pi, the true value and the percent
+# difference between the two (in this example r = 1, so dont need to divide by it)
 estimated_pi = 4*inside_count/iterations
-st.write("Your Estimation of Pi:",estimated_pi )
+st.write("Your Estimation of Pi:", estimated_pi)
 st.write("True Value of Pi:", np.pi)
-diff_percent = round(abs(estimated_pi-np.pi)/np.pi*100,3)
-st.write("The percent error bewteen your estimation and the true value is:", diff_percent, "%")
+#calculate the percent difference from the standard: |value - true_value|/|true_value|*100%
+diff_percent = abs(estimated_pi-np.pi)/np.pi*100
+st.write("The percent error bewteen your estimation and the true value is:", round(diff_percent,3), "%")
 
 # lets track how the estimations change as we change the number of iterations!
 # actually going to add a new point to the graph for every new estimation of \pi
@@ -100,7 +114,7 @@ st.write("In practice this means that a graph like the one below, that tracks yo
 against the total number of points you used in its estimation, will show less spread \
 as the total number of points increases. In math/statistics we call this convergence. \
 In this case the number we converge on is the true value of Pi (I have added it as a \
-black horizantal line on the graph). Notice how spread out the estimations are \
+grey horizantal line on the graph). Notice how spread out the estimations are \
 at low orders of magnitude (small numbers such as 1, 10 or 100) and how at large \
 estimations (1000 or more) you can barely distinguish individual points!")
 # check if a pickled file with all the previous dat is there, if not create Data
@@ -124,44 +138,94 @@ converge.to_pickle('pkled_data.pkl')
 fig1 = plt.figure()
 ax1 = fig1.gca()
 
-plt.xlim(1,max(converge['N_points']+1000))
-plt.ylim(1.5,4.25)
+plt.xlim(0.9,max(converge['N_points']+1000))
+#plt.ylim(,4.25)
 ax1.set_xscale('log')
 
-plt.scatter(converge['N_points'], converge['pi_est'], color='r', s=5)
-plt.hlines(np.pi, 0, max(converge['N_points']+1000), colors='k', label='True Pi', linewidth=2)
+plt.hlines(np.pi, 0, max(converge['N_points']+1000), colors='grey', label='True Pi', linewidth=2, zorder=0)
+plt.scatter(converge['N_points'], converge['pi_est'], color='r', s=5, zorder=10)
 
 ax1.set_ylabel("Calculated Pi Values", fontsize = 10)
 ax1.set_xlabel("Number of Points Used in Estimation", fontsize = 10)
 
 st.pyplot(fig1)
 
+# section on the 3rd grph that sorts points based on their order
 st.header('Keeping Track of Each New Estimate of Pi')
 st.write('This graph tracks the number of times you have estimated Pi and adds a \
 point on the graph each time you try a different "Total Number of Points" or refresh the page! \
 What is cool to see here is that the colour of the point depends on the total number of points. \
 This is a log scale, so that you can really see the difference in how spread out the estimates are \
 as you increase by an order of magnitude. (i.e. when only using 1-9 points versus using 5000) \
-Notice how the pink numbers are all clustered near the true value of Pi (the black line), and as you decrease the \
+Notice how the pink numbers are all clustered near the true value of Pi (the grey line), and as you decrease the \
 number of points used to estimate, the points are spread over a larger and large range of values!')
 
 fig2 = plt.figure()
 ax2 = fig2.gca()
 
-plt.scatter(converge.index, converge['pi_est'],s=6, c= converge['N_points'], cmap='cool', norm=mat_colors.LogNorm())
-plt.hlines(np.pi, 0, max(converge['N_points'].index), colors='k', label='True Pi', linewidth=2)
+plt.hlines(np.pi, 0, max(converge['N_points'].index), colors='grey', label='True Pi', linewidth=2, zorder=0)
+plt.scatter(converge.index, converge['pi_est'],s=6, c= converge['N_points'], cmap='cool', norm=mat_colors.LogNorm(), zorder=10)
 plt.colorbar()
 ax2.set_ylabel("Calculated Pi Values", fontsize = 10)
 ax2.set_xlabel("Trial Number", fontsize = 10)
 
 st.pyplot(fig2)
 
+# add in graph on how the % errors change as iterations are increased!
+
+# create % error y values array
+error_values = abs(converge['pi_est']-np.pi)/np.pi*100
+
+#based on the data, we know we will need a exponential decay to fit to the error_values
+# so make a generic exponential decay
+def exp_decay(x, a, b, c):
+    return a*np.exp(-b*x) + c
+
+def cubic(x,a,b,c,d):
+    return a*x**3 + b*x**2 + c*x + d
+
+#poission probability mass function
+def poission_pmf(x,lam,k):
+    return lam**k*np.exp(-lam)/np.math.factorial(k)
+
+# fit to the exponential curve
+popt, pcov = curve_fit(exp_decay, converge['N_points'], error_values)
+
+# fit to a ploynomial curve level 3 ie
+poly_3 = np.polyfit(converge['N_points'], error_values, 3)
+
+# fit to poission_curve
+#poisson = curve_fit(poission_pmf, converge["N_points"], error_values)
+#poisson
+
+# create the fit x and y values
+x_fit = np.array(range(1,10000))
+y_fit = exp_decay(x_fit, popt[0], popt[1], popt[2])
+y_poly_3 = cubic(x_fit, poly_3[0], poly_3[1], poly_3[2], poly_3[3])
+#possn_fit = poission_pmf(x_fit, poission[0], poission[1])
+
+fig3 = plt.figure()
+#ax5 = fig.add_subplot(111) #big subplot for common x label
+#ax5.set_xlabel("Number of Points Used in Estimation", fontsize = 10)
+ax3 = fig3.add_subplot(121)
+plt.scatter(converge['N_points'], error_values, s=6, c= converge['N_points'], cmap='cool', norm=mat_colors.LogNorm(), zorder=10)
+
+ax4 = fig3.add_subplot(122)
+ax4.set_xscale('log') # np.log10(error_values) to change errors into orders of magnitude
+plt.scatter(converge['N_points'], np.log10(error_values), s=6, c= converge['N_points'], cmap='cool', norm=mat_colors.LogNorm(), zorder=10)
+#plt.plot(x_fit, y_fit, color='black', linestyle='-.')
+#plt.plot(x_fit, y_poly_3, color='grey', linestyle=':')
+ax3.set_ylabel("% Error", fontsize = 10)
+
+fig3.text(0.5, 0.04, "Number of Points Used in Estimation", ha='center', va='center', fontsize = 10)
+
+st.pyplot(fig3)
 
 # math section
 st.header("Show me the Math! :heart:  :nerd_face:")
-math = st.checkbox('click to see the math behind the estimation')
+math = st.beta_expander('click to see the math behind the estimation')
 
-if math:
+with math:
     st.write('The area of a circle and a square are as shown. In this case the length\
     of the square is 2 times the radius of the circle or 2r:')
 
