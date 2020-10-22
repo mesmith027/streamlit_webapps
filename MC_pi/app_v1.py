@@ -55,8 +55,8 @@ a square with sides of length = 2.")
 st.sidebar.title("Simulation Parameter")
 st.sidebar.markdown("This is where you select the total number of randomly generated \
 points you want to use to estimate what Pi is:")
-start_value = rnd.randint(1,10000)
-iterations = st.sidebar.number_input("Total Number of Points", min_value=1,max_value= 10000, value=start_value)
+#start_value = rnd.randint(1,10000) using random number for start value not currently working-> overwrites individual choice
+iterations = st.sidebar.number_input("Total Number of Points", min_value=1,max_value= 10000, value=6792)
 
 # use the total number of points to generate pairs of x and y points for our graph
 x_list = []
