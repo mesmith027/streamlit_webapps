@@ -33,7 +33,8 @@ col1.write("If you want to know more checkout the [Wiki link](https://en.wikiped
 
 # column 2: a gif
 col2.write('[Wiki for the image](https://en.wikipedia.org/wiki/Kinetic_theory_of_gases)')
-col2.image('Translational_motion.gif', caption='Brownian motion is random!')
+# streamlit share launches from a directory above so need to account for this in the file path
+col2.image('MC_pi/Translational_motion.gif', caption='Brownian motion is random!')
 
 st.write("*Lets get going!*")
 
@@ -120,7 +121,8 @@ grey horizantal line on the graph). Notice how spread out the estimations are \
 at low orders of magnitude (small numbers such as 1, 10 or 100) and how at large \
 estimations (1000 or more) you can barely distinguish individual points!")
 # check if a pickled file with all the previous dat is there, if not create Data
-data_file = os.path.isfile('pkled_data.pkl')
+# streamlit share launches from a directory above so need to account for this in the file path
+data_file = os.path.isfile('MC_pi/pkled_data.pkl')
 
 if data_file:
     #the file exists, we want to read in previous data
