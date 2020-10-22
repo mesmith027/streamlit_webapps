@@ -126,7 +126,7 @@ data_file = os.path.isfile('MC_pi/pkled_data.pkl')
 
 if data_file:
     #the file exists, we want to read in previous data
-    converge = pd.read_pickle('pkled_data.pkl')
+    converge = pd.read_pickle('MC_pi/pkled_data.pkl')
 else:
     #create database to work with
     converge = pd.DataFrame([[iterations, estimated_pi]], columns=['N_points','pi_est'])
@@ -136,7 +136,7 @@ if converge.iloc[-1,1] != estimated_pi:
     converge.loc[len(converge)] = [iterations,estimated_pi]
 
 #repickle file with added data
-converge.to_pickle('pkled_data.pkl')
+converge.to_pickle('MC_pi/pkled_data.pkl')
 
 # plot the convergence
 fig1 = plt.figure()
