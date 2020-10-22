@@ -121,12 +121,13 @@ grey horizantal line on the graph). Notice how spread out the estimations are \
 at low orders of magnitude (small numbers such as 1, 10 or 100) and how at large \
 estimations (1000 or more) you can barely distinguish individual points!")
 # check if a pickled file with all the previous dat is there, if not create Data
-# streamlit share launches from a directory above so need to account for this in the file path
-data_file = os.path.isfile('MC_pi/pkled_data.pkl')
+# streamlit share launches from a directory above but having pickle protocol 5 problems
+# this will check for and create a new pkl file in main directory on streamlit servers
+data_file = os.path.isfile('pkled_data.pkl')
 
 if data_file:
     #the file exists, we want to read in previous data
-    converge = pd.read_pickle('MC_pi/pkled_data.pkl')
+    converge = pd.read_pickle('pkled_data.pkl')
 else:
     #create database to work with
     converge = pd.DataFrame([[iterations, estimated_pi]], columns=['N_points','pi_est'])
@@ -136,7 +137,7 @@ if converge.iloc[-1,1] != estimated_pi:
     converge.loc[len(converge)] = [iterations,estimated_pi]
 
 #repickle file with added data
-converge.to_pickle('MC_pi/pkled_data.pkl')
+converge.to_pickle('pkled_data.pkl')
 
 # plot the convergence
 fig1 = plt.figure()
