@@ -39,7 +39,7 @@ st.write("*Lets get going!*")
 
 # section 2 running a MC simulation
 st.header('Run Your First Monte Carlo Simulation! :sunglasses:')
-st.write('From the sidebar type a number in the field (or use the plus button) for \
+st.write('From the sidebar type a number in the field (or use the plus/minus button) for \
 the total number of points you want to use to estimate Pi! ')
 
 st.write("The idea behind this simulation \
@@ -51,9 +51,11 @@ It's not a coincidence! Someone *discovered* this ratio and found it to be \
 st.write("This graph shows all the points overlayed with a circle of radius = 1 and \
 a square with sides of length = 2.")
 
+st.sidebar.title("Simulation Parameter")
 st.sidebar.markdown("This is where you select the total number of randomly generated \
 points you want to use to estimate what Pi is:")
-iterations = st.sidebar.number_input("Total Number of Points", min_value=1,max_value= 10000, value=500)
+start_value = rnd.randint(1,10000)
+iterations = st.sidebar.number_input("Total Number of Points", min_value=1,max_value= 10000, value=start_value)
 
 # use the total number of points to generate pairs of x and y points for our graph
 x_list = []
@@ -100,18 +102,18 @@ st.write("Your Estimation of Pi:", estimated_pi)
 st.write("True Value of Pi:", np.pi)
 #calculate the percent difference from the standard: |value - true_value|/|true_value|*100%
 diff_percent = abs(estimated_pi-np.pi)/np.pi*100
-st.write("The percent error bewteen your estimation and the true value is:", round(diff_percent,3), "%")
+st.write("The percent error between your estimation and the true value is:", round(diff_percent,3), "%")
 
 # lets track how the estimations change as we change the number of iterations!
 # actually going to add a new point to the graph for every new estimation of \pi
 st.header("How the Total Number of Points Affects Your Estimate")
-st.write("One really cool thing about Monte Carlo is that generally as you increase \
-the total number of points you use in your smluation, the more accurate your results. \
+st.write("One really cool thing about Monte Carlo is as you increase \
+the total number of points you use in your simulation, the more accurate your results. \
 This actually relies on a basic principle of statistics called 'The Law of Large Numbers' \
 ([you can learn more about it in the first 2 minutes of this video](https://www.youtube.com/watch?v=MntX3zWNWec)).")
 
 st.write("In practice this means that a graph like the one below, that tracks your calculated Pi value \
-against the total number of points you used in its estimation, will show less spread \
+against the total number of points you used in it's estimation, will show less spread \
 as the total number of points increases. In math/statistics we call this convergence. \
 In this case the number we converge on is the true value of Pi (I have added it as a \
 grey horizantal line on the graph). Notice how spread out the estimations are \
@@ -142,6 +144,7 @@ plt.xlim(0.9,max(converge['N_points']+1000))
 #plt.ylim(,4.25)
 ax1.set_xscale('log')
 
+# zorder puts the line behind the points
 plt.hlines(np.pi, 0, max(converge['N_points']+1000), colors='grey', label='True Pi', linewidth=2, zorder=0)
 plt.scatter(converge['N_points'], converge['pi_est'], color='r', s=5, zorder=10)
 
@@ -158,7 +161,7 @@ What is cool to see here is that the colour of the point depends on the total nu
 This is a log scale, so that you can really see the difference in how spread out the estimates are \
 as you increase by an order of magnitude. (i.e. when only using 1-9 points versus using 5000) \
 Notice how the pink numbers are all clustered near the true value of Pi (the grey line), and as you decrease the \
-number of points used to estimate, the points are spread over a larger and large range of values!')
+number of points used to estimate, the points are spread over a larger and larger range of values!')
 
 fig2 = plt.figure()
 ax2 = fig2.gca()
@@ -172,52 +175,41 @@ ax2.set_xlabel("Trial Number", fontsize = 10)
 st.pyplot(fig2)
 
 # add in graph on how the % errors change as iterations are increased!
+st.header('Difference in the % Error as Number of Points Change')
 
+st.write("A great way to visually show how extreme the change in error is as you increase \
+the number of points used in your simulation, is to plot each % Error as a function of \
+the number of points- as we have done below! The change in the error is *extreme* at the low \
+end of the number of points (bottom right). It's actaully so extreme that it jumps from errors \
+of 100% (yikes thats high!) at 5 points and under to an averge of only a few percent around 100 \
+points. To better see the spread in the points you can log the axes of both the y-axis \
+(the % error) and the x-axis (the number of points).")
+
+# add checkboxes to sidebar to make the axes log!
+st.sidebar.title("% Error Graph Parameters")
+st.sidebar.markdown("To see the details of the error graph you can log one or both axes \
+of the graph. This will display the order of magnitude (the number of 0's before or after \
+the decmal point) of the percent error and total number of points.")
+
+x_log = st.sidebar.checkbox("Set x-axis to log (base 10)")
+y_log = st.sidebar.checkbox("set y-axis to log (base 10)")
 # create % error y values array
 error_values = abs(converge['pi_est']-np.pi)/np.pi*100
 
-#based on the data, we know we will need a exponential decay to fit to the error_values
-# so make a generic exponential decay
-def exp_decay(x, a, b, c):
-    return a*np.exp(-b*x) + c
-
-def cubic(x,a,b,c,d):
-    return a*x**3 + b*x**2 + c*x + d
-
-#poission probability mass function
-def poission_pmf(x,lam,k):
-    return lam**k*np.exp(-lam)/np.math.factorial(k)
-
-# fit to the exponential curve
-popt, pcov = curve_fit(exp_decay, converge['N_points'], error_values)
-
-# fit to a ploynomial curve level 3 ie
-poly_3 = np.polyfit(converge['N_points'], error_values, 3)
-
-# fit to poission_curve
-#poisson = curve_fit(poission_pmf, converge["N_points"], error_values)
-#poisson
-
-# create the fit x and y values
-x_fit = np.array(range(1,10000))
-y_fit = exp_decay(x_fit, popt[0], popt[1], popt[2])
-y_poly_3 = cubic(x_fit, poly_3[0], poly_3[1], poly_3[2], poly_3[3])
-#possn_fit = poission_pmf(x_fit, poission[0], poission[1])
-
+# plot the graph
 fig3 = plt.figure()
-#ax5 = fig.add_subplot(111) #big subplot for common x label
-#ax5.set_xlabel("Number of Points Used in Estimation", fontsize = 10)
-ax3 = fig3.add_subplot(121)
+ax3 = fig3.gca()
+
+if x_log:
+    ax3.set_xscale('log')
+if y_log:
+    ax3.set_yscale('log')
+
 plt.scatter(converge['N_points'], error_values, s=6, c= converge['N_points'], cmap='cool', norm=mat_colors.LogNorm(), zorder=10)
 
-ax4 = fig3.add_subplot(122)
-ax4.set_xscale('log') # np.log10(error_values) to change errors into orders of magnitude
-plt.scatter(converge['N_points'], np.log10(error_values), s=6, c= converge['N_points'], cmap='cool', norm=mat_colors.LogNorm(), zorder=10)
-#plt.plot(x_fit, y_fit, color='black', linestyle='-.')
-#plt.plot(x_fit, y_poly_3, color='grey', linestyle=':')
 ax3.set_ylabel("% Error", fontsize = 10)
 
-fig3.text(0.5, 0.04, "Number of Points Used in Estimation", ha='center', va='center', fontsize = 10)
+ax3.set_xlabel("Number of Points Used in Estimation", fontsize = 10)
 
 st.pyplot(fig3)
 
