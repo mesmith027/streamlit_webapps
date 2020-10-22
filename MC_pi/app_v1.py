@@ -8,7 +8,7 @@ import os.path
 import streamlit as st
 from scipy.optimize import curve_fit
 
-# start with an explination of why MC
+# start with an explination of why MC 
 st.title("Using Monte Carlo to Estimate Pi")
 st.write("Monte Carlo simulations are very useful in a wide variety \
 of fields. That's because they give us a way to predict outcomes that would otherwise be \
