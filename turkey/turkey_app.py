@@ -2,7 +2,7 @@ import streamlit as st
 
 st.title('Thanksgiving Fun :turkey:')
 st.subheader('The Turkey App!')
-st.write('Use this app to create turkeys!')
+st.write('Use this app to create thanksgiving emojis!')
 
 st.write(':turkey:')
 
