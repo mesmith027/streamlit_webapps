@@ -40,22 +40,22 @@ pic_type = st.sidebar.radio('What do you want to see?', ['gif', 'emoji'])
 
 if pic_type == 'gif': 
     choice = st.sidebar.selectbox('Pick your gif!', ['hungry_cat','rocking_hand_turkey','turkey', 'Joey', 'monica', 'sign_language'])
-    file_name = 'img/%s.gif' %choice
+    file_name = 'turkey/img/%s.gif' %choice
     st.image(file_name)
 else: 
     pic_list = ['charlie_brown','cornucopia', 'happy_thanksgiving','table','thanksgiving','turkey_basic','turkey_hat', 'turkey_sketch']
     choice = st.sidebar.selectbox('Pick your emoji!', pic_list)
     if choice == 'thanksgiving':
-        file_name = 'img/%s.jpg' %choice
+        file_name = 'turkey/img/%s.jpg' %choice
         pic_end = '.jpg'
     elif (choice =='happy_thanksgiving') or (choice =='cornucopia'):
-        file_name = 'img/%s.jpeg' %choice
+        file_name = 'turkey/img/%s.jpeg' %choice
         pic_end = '.jpeg'
     else: 
-        file_name = 'img/%s.png' %choice
+        file_name = 'turkey/img/%s.png' %choice
         pic_end = '.png'
 
-    file_name = 'img/{}{}'.format(choice,pic_end)
+    file_name = 'turkey/img/{}{}'.format(choice,pic_end)
     size = st.sidebar.selectbox('Image Size', ['tiny','s','m','true','l','xl','gigantic'], index = 3)
     the_image = Image.open(file_name)
 
@@ -63,6 +63,6 @@ else:
 
     st.image(modified_image)
 
-    modified_image.save('img/current_image{}'.format(pic_end))
+    modified_image.save('turkey/img/current_image{}'.format(pic_end))
 
 st.markdown(get_binary_file_downloader_html(file_name, pic_type), unsafe_allow_html=True)
