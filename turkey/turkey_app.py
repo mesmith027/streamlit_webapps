@@ -3,8 +3,8 @@ from PIL import Image
 import os
 import base64
 
-# used to convert charlie brown image into rgb format dues to image.open error: OSError: cannot write mode P as JPEG
-#Image.open('img/charlie_brown.png').convert('RGB').save('img/Charlie_brown.png')
+# used to convert charlie brown & table image into rgb format dues to image.open error: OSError: cannot write mode P as JPEG
+#Image.open('img/table.png').convert('RGB').save('img/table.png')
 
 def get_binary_file_downloader_html(bin_file, file_label='File'):
     # borrowed from the streamlit community 
@@ -39,7 +39,7 @@ st.sidebar.markdown('## Make your selections here:')
 pic_type = st.sidebar.radio('What do you want to see?', ['gif', 'emoji'])
 
 if pic_type == 'gif': 
-    choice = st.sidebar.selectbox('Pick your gif!', ['rocking_hand_turkey','turkey'])
+    choice = st.sidebar.selectbox('Pick your gif!', ['hungry_cat','rocking_hand_turkey','turkey', 'Joey', 'monica', 'sign_language'])
     file_name = 'img/%s.gif' %choice
     st.image(file_name)
 else: 
