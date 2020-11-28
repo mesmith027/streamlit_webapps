@@ -1,4 +1,4 @@
-# streamlit_webapps
+# streamlit_webapps [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/mesmith027/streamlit_webapps/main/MC_pi/streamlit_app.py)
 Place to develop cool and interesting webapps with Streamlit. As the repo grows, new folders will be added.
 
 # Directories
