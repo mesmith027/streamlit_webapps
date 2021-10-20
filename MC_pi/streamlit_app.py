@@ -18,7 +18,7 @@ st.write("Some examples of every day uses include:")
 
 # create 2 columns so we can add text on one side and a gif on the other
 # Space out the maps so the first one is 2x the size of the second
-col1, col2 = st.beta_columns((2,1))
+col1, col2 = st.columns((2,1))
 #column 1
 
 col1.write("**Finance and Business:** they can be used to evaluate risk in different \
@@ -218,7 +218,7 @@ st.pyplot(fig3)
 
 # math section
 st.header("Show me the Math! :heart:  :nerd_face:")
-math = st.beta_expander('click to see the math behind the estimation')
+math = st.expander('click to see the math behind the estimation')
 
 with math:
     st.write('The area of a circle and a square are as shown. In this case the length\
