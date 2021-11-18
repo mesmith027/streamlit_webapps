@@ -1,11 +1,11 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.colors as mat_colors
 import random as rnd
 import pickle as pkle
 import os.path
 import streamlit as st
+import plotly.express as px
+import plotly.colors as pcolors
 
 def gen_number():
     st.session_state["ran"] = rnd.randint(1,10000)
@@ -112,27 +112,19 @@ if st.session_state['intro']:
         if (x_random**2 +y_random**2) <= 1.0:
             inside_count += 1
 
-    #create the circle for the graph
-    circle = plt.Circle((0,0), 1, color='b', fill=False)
+    fig2 = px.scatter(
+            x=x_list,
+            y=y_list)
+            #size=1)
 
-    #lets plot our paired points and circle on a graph!
-    fig = plt.figure()
-    ax = fig.gca()
+    fig2.add_shape(
+        type="circle",
+        x0=-1, x1=1,
+        y0=-1, y1=1,
+        line_color="red")
 
-    # plot circle first
-    plt.xlim(-1,1)
-    plt.ylim(-1,1)
-    plt.grid(linestyle='--')
-    ax.set_aspect(1)
-    ax.add_artist(circle)
-
-    #plot our points on it
-    plt.scatter(x_list, y_list,s=1, color='r')
-
-    ax.set_ylabel("y-value", fontsize = 10)
-    ax.set_xlabel("x-value", fontsize = 10)
-
-    col2.pyplot(fig)
+    # sent plot to streamlit
+    col2.plotly_chart(fig2)
 
     # finally lets display our estimation of Pi, the true value and the percent
     # difference between the two (in this example r = 1, so dont need to divide by it)
@@ -152,21 +144,22 @@ if st.session_state['intro']:
     # actually going to add a new point to the graph for every new estimation of \pi
     col3, col4 = st.columns(2)
     with col3:
-        st.header("How the Total Number of Points Affects Your Estimate")
-        st.write("One really cool thing about Monte Carlo is as you increase \
-        the total number of points you use in your simulation, the more accurate your results. \
-        This actually relies on a basic principle of statistics called 'The Law of Large Numbers' \
-        ([you can learn more about it in the first 2 minutes of this video](https://www.youtube.com/watch?v=MntX3zWNWec)).")
+        st.header("How the Total Number of Points Affects Pi")
+        st.write("""
+One really cool thing about Monte Carlo is as you increase \
+the total number of points you use in your simulation, the more accurate your results. \
+This actually relies on a basic principle of statistics called 'The Law of Large Numbers' \
+([you can learn more about it in the first 2 minutes of this video](https://www.youtube.com/watch?v=MntX3zWNWec)).
 
-        st.write("In practice this means that a graph like the one below, that tracks your calculated Pi value \
-        against the total number of points you used in it's estimation, will show less spread \
-        as the total number of points increases. In math/statistics we call this convergence. \
-        In this case the number we converge on is the true value of Pi (I have added it as a \
-        grey horizantal line on the graph). Notice how spread out the estimations are \
-        at low orders of magnitude (small numbers such as 1, 10 or 100) and how at large \
-        estimations (1000 or more) you can barely distinguish individual points!")
+In practice this means that a graph like the one below, that tracks your calculated Pi value \
+against the total number of points you used in it's estimation, will show less spread \
+as the total number of points increases. In math/statistics we call this convergence. \
+In this case the number we converge on is the true value of Pi (I have added it as a \
+grey horizantal line on the graph). Notice how spread out the estimations are \
+at low orders of magnitude (small numbers such as 1, 10 or 100) and how at large \
+estimations (1000 or more) you can barely distinguish individual points!""")
+
     # check if a pickled file with all the previous dat is there, if not create Data
-    # streamlit share launches from a directory above but having pickle protocol 5 problems
     # this will check for and create a new pkl file in main directory on streamlit servers
     data_file = os.path.isfile('pkled_data.pkl')
 
@@ -184,23 +177,21 @@ if st.session_state['intro']:
     #repickle file with added data
     converge.to_pickle('pkled_data.pkl')
 
-    # plot the convergence
-    fig1 = plt.figure()
-    ax1 = fig1.gca()
+#plot the convergence
+    fig2 = px.scatter(
+            x=converge['N_points'],
+            y=converge['pi_est'],
+            labels={'x':"Number of Points Used in Estimation",'y':"Calculated Pi values"})
+            #size=1)
 
-    plt.xlim(0.9,max(converge['N_points']+1000))
-    #plt.ylim(,4.25)
-    ax1.set_xscale('log')
+    fig2.add_shape(
+        type="line",
+        x0=0, x1=10000,
+        y0=np.pi, y1=np.pi,
+        line_color="red")
 
-    # zorder puts the line behind the points
-    plt.hlines(np.pi, 0, max(converge['N_points']+1000), colors='grey', label='True Pi', linewidth=2, zorder=0)
-    plt.scatter(converge['N_points'], converge['pi_est'], color='r', s=5, zorder=10)
-
-    ax1.set_ylabel("Calculated Pi Values", fontsize = 10)
-    ax1.set_xlabel("Number of Points Used in Estimation", fontsize = 10)
-
-    #send figure to streamlit
-    col4.pyplot(fig1)
+#send figure to streamlit
+    col4.plotly_chart(fig2)
 
     st.write("---")
     # section on the 3rd grph that sorts points based on their order
@@ -209,24 +200,30 @@ if st.session_state['intro']:
 
     with col5:
         st.header('Keeping Track of Each New Estimate of Pi')
-        st.write('This graph tracks the number of times you have estimated Pi and adds a \
-        point on the graph each time you try a different "Total Number of Points" or refresh the page! \
-        What is cool to see here is that the colour of the point depends on the total number of points. \
-        This is a log scale, so that you can really see the difference in how spread out the estimates are \
-        as you increase by an order of magnitude. (i.e. when only using 1-9 points versus using 5000) \
-        Notice how the pink numbers are all clustered near the true value of Pi (the grey line), and as you decrease the \
-        number of points used to estimate, the points are spread over a larger and larger range of values!')
+        st.write("""
+This graph tracks the number of times you have estimated Pi and adds a \
+point on the graph each time you try a different "Total Number of Points" or refresh the page! \
+What is cool to see here is that the colour of the point depends on the total number of points. \
+This is a log scale, so that you can really see the difference in how spread out the estimates are \
+as you increase by an order of magnitude. (i.e. when only using 1-9 points versus using 5000) \
+Notice how the pink numbers are all clustered near the true value of Pi (the grey line), and as you decrease the \
+number of points used to estimate, the points are spread over a larger and larger range of values!""")
 
-    fig2 = plt.figure()
-    ax2 = fig2.gca()
+    fig2 = px.scatter(
+            x=converge.index,
+            y=converge['pi_est'],
+            color=converge['N_points'],
+            color_continuous_scale = px.colors.sequential.Sunsetdark,
+            labels={'x':"Trial Number",'y':"Calculated Pi values"})
+            #size=1)
 
-    plt.hlines(np.pi, 0, max(converge['N_points'].index), colors='grey', label='True Pi', linewidth=2, zorder=0)
-    plt.scatter(converge.index, converge['pi_est'],s=6, c= converge['N_points'], cmap='cool', norm=mat_colors.LogNorm(), zorder=10)
-    plt.colorbar()
-    ax2.set_ylabel("Calculated Pi Values", fontsize = 10)
-    ax2.set_xlabel("Trial Number", fontsize = 10)
+    fig2.add_shape(
+        type="line",
+        x0=0, x1=len(converge),
+        y0=np.pi, y1=np.pi,
+        line_color="red")
 
-    col6.pyplot(fig2)
+    col6.plotly_chart(fig2)
 
     st.write("---")
     # add in graph on how the % errors change as iterations are increased!
@@ -234,15 +231,16 @@ if st.session_state['intro']:
     col7,col8 = st.columns(2)
 
     with col7:
-        st.header('Difference in the % Error as Number of Points Change')
+        st.header('Difference in the % Error as Iterations Change')
 
-        st.write("A great way to visually show how extreme the change in error is as you increase \
-        the number of points used in your simulation, is to plot each % Error as a function of \
-        the number of points- as we have done below! The change in the error is *extreme* at the low \
-        end of the number of points (bottom right). It's actaully so extreme that it jumps from errors \
-        of 100% (yikes thats high!) at 5 points and under to an averge of only a few percent around 100 \
-        points. To better see the spread in the points you can log the axes of both the y-axis \
-        (the % error) and the x-axis (the number of points).")
+        st.write("""
+A great way to visually show how extreme the change in error is as you increase \
+the number of points used in your simulation, is to plot each % Error as a function of \
+the number of points- as we have done below! The change in the error is *extreme* at the low \
+end of the number of points (bottom right). It's actaully so extreme that it jumps from errors \
+of 100% (yikes thats high!) at 5 points and under to an averge of only a few percent around 100 \
+points. To better see the spread in the points you can log the axes of both the y-axis \
+(the % error) and the x-axis (the number of points).""")
 
         # add checkboxes to sidebar to make the axes log!
         st.subheader("% Error Graph Parameters")
@@ -250,28 +248,20 @@ if st.session_state['intro']:
         of the graph. This will display the order of magnitude (the number of 0's before or after \
         the decmal point) of the percent error and total number of points.")
 
-        x_log = st.checkbox("Set x-axis to log (base 10)")
-        y_log = st.checkbox("set y-axis to log (base 10)")
+        x_log = st.checkbox("log x-axis")
+        y_log = st.checkbox("log y-axis")
     # create % error y values array
     error_values = abs(converge['pi_est']-np.pi)/np.pi*100
 
-    # plot the graph
-    fig3 = plt.figure()
-    ax3 = fig3.gca()
-
-    if x_log:
-        ax3.set_xscale('log')
-    if y_log:
-        ax3.set_yscale('log')
-
-    plt.scatter(converge['N_points'], error_values, s=6, c= converge['N_points'], cmap='cool', norm=mat_colors.LogNorm(), zorder=10)
-
-    ax3.set_ylabel("% Error", fontsize = 10)
-
-    ax3.set_xlabel("Number of Points Used in Estimation", fontsize = 10)
-
-    col8.pyplot(fig3)
-
+    fig2 = px.scatter(
+            x=converge['N_points'],
+            y=error_values,
+            color=converge['N_points'],
+            color_continuous_scale = px.colors.sequential.Sunsetdark,
+            log_y=y_log, log_x=x_log,
+            labels={'x':"Number of Points Used in Estimation",'y':"% Error"})
+            #size=1)
+    col8.plotly_chart(fig2)
     # math section
     st.header("Show me the Math! :heart:  :nerd_face:")
     math = st.expander('click to see the math behind the estimation')
