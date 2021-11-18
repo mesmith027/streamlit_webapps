@@ -74,7 +74,7 @@ if st.session_state['intro']:
         st.title("Simulation Parameter")
         st.markdown("This is where you select the total number of randomly generated \
         points you want to use to estimate what Pi is:")
-        iterations = st.number_input("Total Number of Points", min_value=1,max_value= 10000, value=st.session_state["ran"])
+        iterations = st.number_input("Total Number of Points:", min_value=1,max_value= 10000, value=st.session_state["ran"])
         st.button("Random number", on_click=gen_number)
 
     col1,col2 = st.columns(2)
@@ -152,9 +152,10 @@ the total number of points you use in your simulation, the more accurate your re
 This actually relies on a basic principle of statistics called 'The Law of Large Numbers' \
 ([you can learn more about it in the first 2 minutes of this video](https://www.youtube.com/watch?v=MntX3zWNWec)).
 
-In practice this means that a graph like the one below, that tracks your calculated Pi value \
+In practice this means that a graph like this one, that tracks your calculated Pi value, \
 against the total number of points you used in it's estimation, will show less spread \
-as the total number of points increases. In math/statistics we call this convergence. \
+as the total number of points increases. In math/statistics we call this convergence.
+
 In this case the number we converge on is the true value of Pi (I have added it as a \
 grey horizantal line on the graph). Notice how spread out the estimations are \
 at low orders of magnitude (small numbers such as 1, 10 or 100) and how at large \
@@ -203,10 +204,12 @@ estimations (1000 or more) you can barely distinguish individual points!""")
         st.header('Keeping Track of Each New Estimate of Pi')
         st.write("""
 This graph tracks the number of times you have estimated Pi and adds a \
-point on the graph each time you try a different "Total Number of Points" or refresh the page! \
-What is cool to see here is that the colour of the point depends on the total number of points. \
+point on the graph each time you try a different "Total Number of Points"! \
+What is cool to see here is that the colour of the point depends on the total number of points.
+
 This is a log scale, so that you can really see the difference in how spread out the estimates are \
-as you increase by an order of magnitude. (i.e. when only using 1-9 points versus using 5000) \
+as you increase by an order of magnitude (i.e. when only using 1-9 points versus using 5000).
+
 Notice how the pink numbers are all clustered near the true value of Pi (the grey line), and as you decrease the \
 number of points used to estimate, the points are spread over a larger and larger range of values!""")
 
@@ -237,7 +240,9 @@ number of points used to estimate, the points are spread over a larger and large
         st.write("""
 A great way to visually show how extreme the change in error is as you increase \
 the number of points used in your simulation, is to plot each % Error as a function of \
-the number of points! The change in the error is *extreme* at the low \
+the number of points!
+
+The change in the error is *extreme* at the low \
 end of the number of points (bottom right). It's actaully so extreme that it jumps from errors \
 of 100% (yikes thats high!) at 5 points and under to an averge of only a few percent around 100 \
 points. To better see the spread in the points you can log the axes of both the y-axis \
