@@ -116,7 +116,8 @@ if st.session_state['intro']:
             x=x_list,
             y=y_list)
             #size=1)
-
+    fig2.update_layout(width=700,
+    height=700)
     fig2.add_shape(
         type="circle",
         x0=-1, x1=1,
@@ -159,6 +160,9 @@ grey horizantal line on the graph). Notice how spread out the estimations are \
 at low orders of magnitude (small numbers such as 1, 10 or 100) and how at large \
 estimations (1000 or more) you can barely distinguish individual points!""")
 
+    #calculate error to store in data
+    error = abs(estimated_pi-np.pi)/np.pi*100
+
     # check if a pickled file with all the previous dat is there, if not create Data
     # this will check for and create a new pkl file in main directory on streamlit servers
     data_file = os.path.isfile('pkled_data.pkl')
@@ -168,14 +172,11 @@ estimations (1000 or more) you can barely distinguish individual points!""")
         converge = pd.read_pickle('pkled_data.pkl')
     else:
         #create database to work with
-        converge = pd.DataFrame([[iterations, estimated_pi]], columns=['N_points','pi_est'])
+        converge = pd.DataFrame([[iterations, estimated_pi, error]], columns=['N_points','pi_est'])
 
     if converge.iloc[-1,1] != estimated_pi:
         # add a line with new data in the converge
-        converge.loc[len(converge)] = [iterations,estimated_pi]
-
-    #repickle file with added data
-    converge.to_pickle('pkled_data.pkl')
+        converge.loc[len(converge)] = [iterations,estimated_pi,error]
 
 #plot the convergence
     fig2 = px.scatter(
@@ -214,7 +215,7 @@ number of points used to estimate, the points are spread over a larger and large
             y=converge['pi_est'],
             color=converge['N_points'],
             color_continuous_scale = px.colors.sequential.Sunsetdark,
-            labels={'x':"Trial Number",'y':"Calculated Pi values"})
+            labels={'x':"Trial Number",'y':"Calculated Pi values", 'color':"# of Points"})
             #size=1)
 
     fig2.add_shape(
@@ -236,32 +237,32 @@ number of points used to estimate, the points are spread over a larger and large
         st.write("""
 A great way to visually show how extreme the change in error is as you increase \
 the number of points used in your simulation, is to plot each % Error as a function of \
-the number of points- as we have done below! The change in the error is *extreme* at the low \
+the number of points! The change in the error is *extreme* at the low \
 end of the number of points (bottom right). It's actaully so extreme that it jumps from errors \
 of 100% (yikes thats high!) at 5 points and under to an averge of only a few percent around 100 \
 points. To better see the spread in the points you can log the axes of both the y-axis \
 (the % error) and the x-axis (the number of points).""")
 
         # add checkboxes to sidebar to make the axes log!
-        st.subheader("% Error Graph Parameters")
-        st.markdown("To see the details of the error graph you can log one or both axes \
-        of the graph. This will display the order of magnitude (the number of 0's before or after \
-        the decmal point) of the percent error and total number of points.")
+        st.markdown("""
+##### % Error Graph Parameters
+To see the details of the error graph you can log one or both axes \
+of the graph. This will display the order of magnitude (the number of 0's before or after \
+the decmal point) of the percent error and total number of points.""")
 
-        x_log = st.checkbox("log x-axis")
-        y_log = st.checkbox("log y-axis")
-    # create % error y values array
-    error_values = abs(converge['pi_est']-np.pi)/np.pi*100
+        x_log = st.checkbox("log Number of Points")
+        y_log = st.checkbox("log % Error")
 
     fig2 = px.scatter(
             x=converge['N_points'],
-            y=error_values,
+            y=converge['error'],
             color=converge['N_points'],
             color_continuous_scale = px.colors.sequential.Sunsetdark,
             log_y=y_log, log_x=x_log,
-            labels={'x':"Number of Points Used in Estimation",'y':"% Error"})
+            labels={'x':"Number of Points Used in Estimation",'y':"% Error",'color':"# of Points"})
             #size=1)
     col8.plotly_chart(fig2)
+
     # math section
     st.header("Show me the Math! :heart:  :nerd_face:")
     math = st.expander('click to see the math behind the estimation')
