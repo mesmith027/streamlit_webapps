@@ -172,12 +172,9 @@ estimations (1000 or more) you can barely distinguish individual points!""")
 
     if data_file:
         #the file exists, we want to read in previous data
-        st.write("here")
         converge = pd.read_pickle('pkled_data.pkl')
-        st.write(converge)
-        # delete file to start new app
-        #os.remove(data_file)
-        #st.write(os.path.isfile('pkled_data.pkl'))
+        ## leave os remove file here until change to database structure
+        #os.remove('pkled_data.pkl')
     else:
         #create database to work with
         converge = pd.DataFrame([[iterations, estimated_pi, error]], columns=['N_points','pi_est',"error"])
