@@ -54,9 +54,9 @@ Click here if you want to know more about [Monte Carlo](https://en.wikipedia.org
 # column 2: a gif
 with col3:
     # streamlit share launches from a directory above so need to account for this in the file path
-    #col2.image('MC_pi/Translational_motion.gif', caption='Brownian motion is random!')
+    st.image('MC_pi/Translational_motion.gif', caption='Brownian motion is random!')
     #if running locally use the line below for the image
-    st.image('Translational_motion.gif', caption='Brownian motion is random!')
+    #st.image('Translational_motion.gif', caption='Brownian motion is random!')
 
 with col2:
     st.subheader("*Lets get going!*")
@@ -83,17 +83,17 @@ if st.session_state['intro']:
         # section 2 running a MC simulation
         st.header('Run Your First Monte Carlo Simulation! :sunglasses:')
         st.write("""
-        From the sidebar type a number in the field (or use the plus/minus button) for \
-        the total number of points you want to use to estimate Pi!
+From the sidebar type a number in the field (or use the plus/minus button) for \
+the total number of points you want to use to estimate Pi!
 
-        The idea behind this simulation \
-        (yes your a computational person now! :star-struck:) is that the ratio of area of the circle \
-        to the area outside the circle but inside the square (those corner bits) has a ratio that happens to be Pi. \
-        It's not a coincidence! Someone *discovered* this ratio and found it to be \
-        **SO useful** that we decided to give it a special name and symbol!
+The idea behind this simulation \
+[yes your a computational person now! :star-struck:] is that the ratio of area of the circle \
+to the area outside the circle but inside the square (those corner bits) has a ratio that happens to be Pi. \
+It's not a coincidence! Someone *discovered* this ratio and found it to be \
+**SO useful** that we decided to give it a special name and symbol!
 
-        This graph shows all the points overlayed with a circle of radius = 1 and \
-        a square with sides of length = 2.""")
+This graph shows all the points overlayed with a circle of radius = 1 and \
+a square with sides of length = 2.""")
 
     # use the total number of points to generate pairs of x and y points for our graph
     x_list = []
@@ -145,7 +145,7 @@ if st.session_state['intro']:
     # actually going to add a new point to the graph for every new estimation of \pi
     col3, col4 = st.columns(2)
     with col3:
-        st.header("How the Total Number of Points Affects Pi")
+        st.header("How the Total Number of Points Affects Pi :hash:")
         st.write("""
 One really cool thing about Monte Carlo is as you increase \
 the total number of points you use in your simulation, the more accurate your results. \
@@ -157,9 +157,11 @@ against the total number of points you used in it's estimation, will show less s
 as the total number of points increases. In math/statistics we call this convergence.
 
 In this case the number we converge on is the true value of Pi (I have added it as a \
-grey horizantal line on the graph). Notice how spread out the estimations are \
+red horizantal line on the graph). Notice how spread out the estimations are \
 at low orders of magnitude (small numbers such as 1, 10 or 100) and how at large \
 estimations (1000 or more) you can barely distinguish individual points!""")
+
+        x_log = st.checkbox("log Number of Points", key="graph_1")
 
     #calculate error to store in data
     error = abs(estimated_pi-np.pi)/np.pi*100
@@ -183,12 +185,13 @@ estimations (1000 or more) you can barely distinguish individual points!""")
     fig2 = px.scatter(
             x=converge['N_points'],
             y=converge['pi_est'],
+            log_x=x_log,
             labels={'x':"Number of Points Used in Estimation",'y':"Calculated Pi values"})
             #size=1)
 
     fig2.add_shape(
         type="line",
-        x0=0, x1=10000,
+        x0=1, x1=10000,
         y0=np.pi, y1=np.pi,
         line_color="red")
 
@@ -201,26 +204,34 @@ estimations (1000 or more) you can barely distinguish individual points!""")
     col5,col6 = st.columns(2)
 
     with col5:
-        st.header('Keeping Track of Each New Estimate of Pi')
+        st.header('Keeping Track of Each New Estimate of Pi :pie:')
         st.write("""
 This graph tracks the number of times you have estimated Pi and adds a \
 point on the graph each time you try a different "Total Number of Points"! \
 What is cool to see here is that the colour of the point depends on the total number of points.
 
-This is a log scale, so that you can really see the difference in how spread out the estimates are \
+You can really see the difference in how spread out the estimates are \
 as you increase by an order of magnitude (i.e. when only using 1-9 points versus using 5000).
 
-Notice how the pink numbers are all clustered near the true value of Pi (the grey line), and as you decrease the \
+Notice how the pink numbers are all clustered near the true value of Pi (the red line), and as you decrease the \
 number of points used to estimate, the points are spread over a larger and larger range of values!""")
 
+        color = st.radio("Color points by:", ["Number of Points", "% Error"])
+        range = st.slider("Range of Pi values:",0.0,4.0,[0.0,4.0],0.5)
+        range = [range[0]-0.25, range[1]+0.25]
+
+        if color == "Number of Points":
+            column = "N_points"
+        else:
+            column = "error"
     fig2 = px.scatter(
             x=converge.index,
             y=converge['pi_est'],
-            color=converge['N_points'],
+            color=converge[column],
             color_continuous_scale = px.colors.sequential.Sunsetdark,
             labels={'x':"Trial Number",'y':"Calculated Pi values", 'color':"# of Points"})
             #size=1)
-
+    fig2.update_layout(yaxis=dict(range=range))
     fig2.add_shape(
         type="line",
         x0=0, x1=len(converge),
@@ -235,7 +246,7 @@ number of points used to estimate, the points are spread over a larger and large
     col7,col8 = st.columns(2)
 
     with col7:
-        st.header('Difference in the % Error as Iterations Change')
+        st.header('% Error as Iterations Change :chart_with_downwards_trend:')
 
         st.write("""
 A great way to visually show how extreme the change in error is as you increase \
