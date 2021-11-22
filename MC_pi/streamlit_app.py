@@ -54,9 +54,9 @@ Click here if you want to know more about [Monte Carlo](https://en.wikipedia.org
 # column 2: a gif
 with col3:
     # streamlit share launches from a directory above so need to account for this in the file path
-    #st.image('MC_pi/Translational_motion.gif', caption='Brownian motion is random!')
+    st.image('MC_pi/Translational_motion.gif', caption='Brownian motion is random!')
     #if running locally use the line below for the image
-    st.image('Translational_motion.gif', caption='Brownian motion is random!')
+    #st.image('Translational_motion.gif', caption='Brownian motion is random!')
 
 with col2:
     st.subheader("*Lets get going!*")
