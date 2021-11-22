@@ -176,8 +176,8 @@ estimations (1000 or more) you can barely distinguish individual points!""")
         converge = pd.read_pickle('pkled_data.pkl')
         st.write(converge)
         # delete file to start new app
-        os.remove(data_file)
-        st.write(os.path.isfile('pkled_data.pkl'))
+        #os.remove(data_file)
+        #st.write(os.path.isfile('pkled_data.pkl'))
     else:
         #create database to work with
         converge = pd.DataFrame([[iterations, estimated_pi, error]], columns=['N_points','pi_est',"error"])
