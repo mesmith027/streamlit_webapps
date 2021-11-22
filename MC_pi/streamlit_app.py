@@ -54,9 +54,9 @@ Click here if you want to know more about [Monte Carlo](https://en.wikipedia.org
 # column 2: a gif
 with col3:
     # streamlit share launches from a directory above so need to account for this in the file path
-    st.image('MC_pi/Translational_motion.gif', caption='Brownian motion is random!')
+    #st.image('MC_pi/Translational_motion.gif', caption='Brownian motion is random!')
     #if running locally use the line below for the image
-    #st.image('Translational_motion.gif', caption='Brownian motion is random!')
+    st.image('Translational_motion.gif', caption='Brownian motion is random!')
 
 with col2:
     st.subheader("*Lets get going!*")
@@ -170,17 +170,17 @@ estimations (1000 or more) you can barely distinguish individual points!""")
     # this will check for and create a new pkl file in main directory on streamlit servers
     data_file = os.path.isfile('pkled_data.pkl')
 
-    # if data_file:
-    #     #the file exists, we want to read in previous data
-    #     st.write("here")
-    #     converge = pd.read_pickle('pkled_data.pkl')
-    #     st.write(converge)
-    #     # delete file to start new app
-    #     os.remove(data_file)
-    #     st.write(os.path.isfile('pkled_data.pkl'))
-    # else:
+    if data_file:
+        #the file exists, we want to read in previous data
+        st.write("here")
+        converge = pd.read_pickle('pkled_data.pkl')
+        st.write(converge)
+        # delete file to start new app
+        os.remove(data_file)
+        st.write(os.path.isfile('pkled_data.pkl'))
+    else:
         #create database to work with
-    converge = pd.DataFrame([[iterations, estimated_pi, error]], columns=['N_points','pi_est'])
+        converge = pd.DataFrame([[iterations, estimated_pi, error]], columns=['N_points','pi_est',"error"])
 
     if converge.iloc[-1,1] != estimated_pi:
         # add a line with new data in the converge
