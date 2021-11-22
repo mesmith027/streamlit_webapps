@@ -170,17 +170,17 @@ estimations (1000 or more) you can barely distinguish individual points!""")
     # this will check for and create a new pkl file in main directory on streamlit servers
     data_file = os.path.isfile('pkled_data.pkl')
 
-    if data_file:
-        #the file exists, we want to read in previous data
-        st.write("here")
-        converge = pd.read_pickle('pkled_data.pkl')
-        st.write(converge)
-        # delete file to start new app
-        os.remove(data_file)
-        st.write(os.path.isfile('pkled_data.pkl'))
-    else:
+    # if data_file:
+    #     #the file exists, we want to read in previous data
+    #     st.write("here")
+    #     converge = pd.read_pickle('pkled_data.pkl')
+    #     st.write(converge)
+    #     # delete file to start new app
+    #     os.remove(data_file)
+    #     st.write(os.path.isfile('pkled_data.pkl'))
+    # else:
         #create database to work with
-        converge = pd.DataFrame([[iterations, estimated_pi, error]], columns=['N_points','pi_est'])
+    converge = pd.DataFrame([[iterations, estimated_pi, error]], columns=['N_points','pi_est'])
 
     if converge.iloc[-1,1] != estimated_pi:
         # add a line with new data in the converge
@@ -283,6 +283,9 @@ the decmal point) of the percent error and total number of points.""")
             labels={'x':"Number of Points Used in Estimation",'y':"% Error",'color':"# of Points"})
             #size=1)
     col8.plotly_chart(fig2)
+
+    #repickle file with added data
+    converge.to_pickle('pkled_data.pkl')
 
     # math section
     st.header("Show me the Math! :heart:  :nerd_face:")
