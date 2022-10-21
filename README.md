@@ -1,4 +1,6 @@
 # streamlit_webapps
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmesmith027%2Fstreamlit_webapps.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmesmith027%2Fstreamlit_webapps?ref=badge_shield)
+
 Place to develop cool and interesting webapps with Streamlit. As the repo grows, new folders will be added.
 
 # Directories
@@ -7,3 +9,7 @@ Place to develop cool and interesting webapps with Streamlit. As the repo grows,
 
 ## MC_pi
 - in development Monte Carlo simulation that allows a user to estimate the value of Pi (3.14159...)
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmesmith027%2Fstreamlit_webapps.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmesmith027%2Fstreamlit_webapps?ref=badge_large)
