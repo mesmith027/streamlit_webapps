@@ -1,6 +1,5 @@
 # streamlit_webapps
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmesmith027%2Fstreamlit_webapps.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmesmith027%2Fstreamlit_webapps?ref=badge_shield)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmesmith027%2Fstreamlit_webapps.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmesmith027%2Fstreamlit_webapps?ref=badge_small)
 
 Place to develop cool and interesting webapps with Streamlit. As the repo grows, new folders will be added.
 
